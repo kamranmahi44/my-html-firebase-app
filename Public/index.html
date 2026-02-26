@@ -2,114 +2,115 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NetScan Admin Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAHI G - PRO SCAN</title>
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="icon-512.png" type="image/png">
-    
     <style>
-        :root { --primary: #007bff; --secondary: #28a745; --bg: #f8f9fa; }
-        body { font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); margin: 0; padding: 0; color: #333; }
+        body { background: radial-gradient(circle, #0a192f 0%, #02060c 100%); color: #00f2ff; font-family: 'Segoe UI', sans-serif; text-align: center; margin: 0; padding: 20px; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
         
-        /* Professional Header */
-        .header { background: linear-gradient(135deg, #0062ff, #0046b3); color: white; padding: 30px 20px; border-radius: 0 0 25px 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-        .logo { width: 65px; height: 65px; background: white; border-radius: 15px; padding: 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        h1 { font-size: 3rem; letter-spacing: 10px; margin-top: 40px; text-shadow: 0 0 20px #00f2ff; }
         
-        /* Stats Card */
-        .status-card { background: white; margin: -20px 20px 20px 20px; padding: 15px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: space-around; }
-        .stat-item { text-align: center; font-size: 0.85rem; }
-        .stat-item b { display: block; color: var(--primary); font-size: 1rem; }
+        /* The Big Circle Scan Button */
+        .scan-circle { width: 220px; height: 220px; border-radius: 50%; border: 4px solid #00f2ff; display: flex; flex-direction: column; justify-content: center; align-items: center; margin: 50px auto; cursor: pointer; box-shadow: 0 0 30px rgba(0, 242, 255, 0.3); transition: 0.3s; position: relative; background: rgba(0,0,0,0.5); }
+        .scan-circle:active { transform: scale(0.95); box-shadow: 0 0 50px #00f2ff; }
+        .scan-circle span { color: #fff; font-size: 14px; letter-spacing: 2px; }
+        .scan-circle b { font-size: 32px; letter-spacing: 4px; }
 
-        /* Device List */
-        .container { padding: 0 20px 100px 20px; }
-        .device-card { background: white; padding: 15px; margin-bottom: 12px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; border-left: 5px solid var(--secondary); transition: transform 0.2s; }
-        .device-card:active { transform: scale(0.98); }
-        .ip-info { text-align: left; }
-        .ip-info b { font-size: 1.1rem; display: block; }
-        .ip-info span { font-size: 0.8rem; color: #777; }
+        .status-text { font-size: 18px; letter-spacing: 3px; margin-bottom: 40px; text-transform: uppercase; }
 
-        /* Action Buttons */
-        .btn-open { background: var(--secondary); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; text-decoration: none; cursor: pointer; }
-        .refresh-btn { position: fixed; bottom: 20px; right: 20px; background: var(--primary); color: white; border: none; width: 60px; height: 60px; border-radius: 50%; box-shadow: 0 4px 15px rgba(0,123,255,0.4); font-size: 24px; cursor: pointer; }
+        /* Login Info Boxes */
+        .info-box { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(0, 242, 255, 0.2); border-radius: 12px; width: 90%; max-width: 400px; padding: 12px 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .info-box span { font-size: 14px; color: #00f2ff; }
+        .copy-btn { background: #00f2ff; color: #000; border: none; padding: 5px 15px; border-radius: 4px; font-weight: bold; font-size: 12px; cursor: pointer; }
+
+        /* Hidden Result Button */
+        #result-link { display: none; margin-top: 20px; background: #00f2ff; color: #000; padding: 15px 40px; border-radius: 30px; font-weight: bold; text-decoration: none; box-shadow: 0 0 20px #00f2ff; animation: pulse 1.5s infinite; }
+        
+        @keyframes pulse { 0% { opacity: 0.8; } 50% { opacity: 1; } 100% { opacity: 0.8; } }
+        
+        footer { margin-top: auto; font-size: 10px; color: #444; letter-spacing: 2px; padding-bottom: 20px; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <img src="icon-512.png" class="logo" alt="App Logo">
-        <h2 style="margin: 15px 0 5px 0;">Network Admin</h2>
-        <div id="isp-name">Detecting Network...</div>
+    <h1>MAHI G</h1>
+
+    <div class="scan-circle" onclick="startMahiScan()">
+        <span>PRESS</span>
+        <b>SCAN</b>
     </div>
 
-    <div class="status-card">
-        <div class="stat-item"><span id="city-text">...</span><b>City</b></div>
-        <div class="stat-item"><span id="type-text">Checking</span><b>Connection</b></div>
-    </div>
+    <div class="status-text" id="status">Ready to Scan</div>
 
-    <div class="container" id="device-list">
-        <div style="text-align:center; padding:20px; color:#666;">Scanning for Modems (192.168.x.x)...</div>
-    </div>
+    <div class="info-box"><span>User: telecomadmin</span><button class="copy-btn" onclick="copyText('telecomadmin')">COPY</button></div>
+    <div class="info-box"><span>Pass: admintelecom</span><button class="copy-btn" onclick="copyText('admintelecom')">COPY</button></div>
+    <div class="info-box"><span>User: root</span><button class="copy-btn" onclick="copyText('root')">COPY</button></div>
+    <div class="info-box"><span>Pass: adminHW</span><button class="copy-btn" onclick="copyText('adminHW')">COPY</button></div>
 
-    <button class="refresh-btn" onclick="location.reload()">🔄</button>
+    <a href="#" id="result-link" target="_blank">OPEN MODEM ADMIN</a>
+
+    <footer>
+        © 2026 COPYRIGHT POWERED BY<br>
+        <b style="color:#00f2ff">KAMRAN KHAN</b>
+    </footer>
 
     <script>
-        // 1. Get Live ISP & Geography Data
-        async function loadNetworkProfile() {
-            try {
-                const res = await fetch('https://ipapi.co/json/');
-                const data = await res.json();
-                document.getElementById('isp-name').innerText = data.org;
-                document.getElementById('city-text').innerText = data.city;
-                
-                const conn = navigator.connection || {};
-                document.getElementById('type-text').innerText = conn.effectiveType || "Wi-Fi";
-            } catch (e) {
-                document.getElementById('isp-name').innerText = "Local Wi-Fi Network";
-            }
-            runScan();
+        function copyText(text) {
+            navigator.clipboard.writeText(text);
+            alert("Copied: " + text);
         }
 
-        // 2. The Universal Modem Scanner
-        function runScan() {
-            const list = document.getElementById('device-list');
-            const subnets = ["192.168.100.1", "192.168.1.1", "192.168.0.1", "192.168.8.1", "10.0.0.1"];
-            
-            list.innerHTML = ""; // Clear list for fresh scan
+        async function startMahiScan() {
+            const status = document.getElementById('status');
+            const link = document.getElementById('result-link');
+            const scanBtn = document.querySelector('.scan-circle');
 
-            subnets.forEach(ip => {
+            status.innerText = "Scanning Gateway...";
+            status.style.color = "#fff";
+            scanBtn.style.borderColor = "#fff";
+            
+            // The IPs we are looking for
+            const gateways = ["192.168.100.1", "192.168.1.1", "192.168.0.1", "192.168.18.1", "192.168.8.1"];
+            let found = false;
+
+            for (const ip of gateways) {
+                if (found) break;
+                
+                // Stealth check using Image
                 const img = new Image();
-                // This bypasses the HTTPS security wall
                 img.src = `http://${ip}/favicon.ico?t=${Date.now()}`;
                 
-                // If it loads or errors, the IP is likely active
-                img.onload = () => createDeviceCard(ip, "Active Modem Found");
-                img.onerror = () => createDeviceCard(ip, "Gateway Detected");
-            });
+                // We give each IP 1.5 seconds to respond
+                const check = new Promise(resolve => {
+                    img.onload = () => resolve(true);
+                    img.onerror = () => resolve(true); // Many routers block icon requests but exist
+                    setTimeout(() => resolve(false), 1500);
+                });
+
+                const result = await check;
+                if (result) {
+                    link.href = `http://${ip}`;
+                    link.style.display = "inline-block";
+                    status.innerText = "GATEWAY FOUND: " + ip;
+                    status.style.color = "#00f2ff";
+                    found = true;
+                }
+            }
+
+            if (!found) {
+                status.innerText = "No Gateway Detected";
+                // Fallback to default if nothing found
+                link.href = "http://192.168.100.1";
+                link.style.display = "inline-block";
+            }
         }
 
-        function createDeviceCard(ip, status) {
-            const list = document.getElementById('device-list');
-            if (document.getElementById('dev-' + ip)) return;
-
-            const card = document.createElement('div');
-            card.id = 'dev-' + ip;
-            card.className = 'device-card';
-            card.innerHTML = `
-                <div class="ip-info">
-                    <b>${ip}</b>
-                    <span>${status}</span>
-                </div>
-                <button class="btn-open" onclick="window.open('http://${ip}', '_blank')">LOGIN</button>
-            `;
-            list.appendChild(card);
-        }
-
-        // Register PWA Service Worker
+        // Register Service Worker for PWA
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js');
         }
-
-        window.onload = loadNetworkProfile;
     </script>
 </body>
-</html>
+    </html>
+    
