@@ -2,174 +2,114 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>MAHI G - PRO SCANNER</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NetScan Admin Pro</title>
     <link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon-512.png">
+    <link rel="icon" href="icon-512.png" type="image/png">
     
-<style>
-        :root { --glow: #00f2fe; --bg: #000; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+    <style>
+        :root { --primary: #007bff; --secondary: #28a745; --bg: #f8f9fa; }
+        body { font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); margin: 0; padding: 0; color: #333; }
         
-        html, body { 
-            height: 100%; width: 100%; overflow: hidden; 
-            background: radial-gradient(circle at center, #0f172a 0%, #000 100%); 
-        }
-
-        /* Ensures the page is always full-screen and fits everything */
-        .app-container {
-            display: flex; flex-direction: column; height: 100dvh; width: 100%;
-            padding: 10px 20px; justify-content: space-between; align-items: center;
-        }
-
-        .logo-text {
-            font-size: 2.2rem; font-weight: 900; letter-spacing: 10px; margin-top: 10px;
-            background: linear-gradient(to bottom, #fff, var(--glow));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 15px rgba(0, 242, 254, 0.5);
-        }
-
-        /* CENTER SCAN AREA */
-        .main-action { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%; }
+        /* Professional Header */
+        .header { background: linear-gradient(135deg, #0062ff, #0046b3); color: white; padding: 30px 20px; border-radius: 0 0 25px 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .logo { width: 65px; height: 65px; background: white; border-radius: 15px; padding: 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
         
-        .scan-box { position: relative; width: 220px; height: 220px; display: flex; justify-content: center; align-items: center; }
-        .ring { position: absolute; border-radius: 50%; border: 1px solid rgba(0, 242, 254, 0.2); animation: pulse 3s infinite ease-out; }
-        .r1 { width: 100%; height: 100%; }
-        .r2 { width: 80%; height: 80%; animation-delay: 0.5s; }
+        /* Stats Card */
+        .status-card { background: white; margin: -20px 20px 20px 20px; padding: 15px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: space-around; }
+        .stat-item { text-align: center; font-size: 0.85rem; }
+        .stat-item b { display: block; color: var(--primary); font-size: 1rem; }
 
-        @keyframes pulse { 0% { transform: scale(0.7); opacity: 0; } 50% { opacity: 0.4; } 100% { transform: scale(1.1); opacity: 0; } }
+        /* Device List */
+        .container { padding: 0 20px 100px 20px; }
+        .device-card { background: white; padding: 15px; margin-bottom: 12px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; border-left: 5px solid var(--secondary); transition: transform 0.2s; }
+        .device-card:active { transform: scale(0.98); }
+        .ip-info { text-align: left; }
+        .ip-info b { font-size: 1.1rem; display: block; }
+        .ip-info span { font-size: 0.8rem; color: #777; }
 
-        .scan-btn {
-            width: 155px; height: 155px; border-radius: 50%; background: #000; border: 3px solid var(--glow);
-            color: var(--glow); z-index: 10; position: relative; overflow: hidden;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            cursor: pointer; box-shadow: 0 0 40px rgba(0, 242, 254, 0.4);
-        }
-
-        .scan-btn::after {
-            content: ''; position: absolute; top: -50%; left: -100%; width: 50%; height: 200%;
-            background: rgba(255, 255, 255, 0.15); transform: rotate(30deg); animation: shine 2.5s infinite;
-        }
-        @keyframes shine { 0% { left: -100%; } 20% { left: 150%; } 100% { left: 150%; } }
-
-        #status-msg { margin-top: 15px; font-size: 13px; font-weight: 800; letter-spacing: 3px; color: var(--glow); text-transform: uppercase; text-shadow: 0 0 10px var(--glow); }
-
-        /* SLIM CREDENTIALS */
-        .cred-list { width: 100%; max-width: 360px; margin-bottom: 5px; }
-        .cred-item { height: 36px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; display: flex; justify-content: space-between; align-items: center; padding: 0 12px; margin-bottom: 6px; }
-        .cred-item span { color: var(--glow); font-size: 12px; font-weight: bold; }
-        .copy-btn { background: var(--glow); border: none; padding: 4px 10px; border-radius: 5px; font-size: 9px; font-weight: 900; color: #000; cursor: pointer; }
-
-        /* FOOTER */
-        .footer { text-align: center; padding-bottom: 15px; }
-        .ip-info { font-size: 11px; color: #94a3b8; font-weight: bold; margin-bottom: 5px; }
-        .author { color: var(--glow); font-weight: bold; font-size: 11px; letter-spacing: 3px; margin-top: 2px; display: block; }
+        /* Action Buttons */
+        .btn-open { background: var(--secondary); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; text-decoration: none; cursor: pointer; }
+        .refresh-btn { position: fixed; bottom: 20px; right: 20px; background: var(--primary); color: white; border: none; width: 60px; height: 60px; border-radius: 50%; box-shadow: 0 4px 15px rgba(0,123,255,0.4); font-size: 24px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div class="app-container">
-        <!-- Top Logo -->
-        <div class="logo-text">MAHI G</div>
-
-        <!-- Center Scan Button -->
-        <div class="main-action">
-            <div class="scan-box">
-                <div class="ring r1"></div>
-                <div class="ring r2"></div>
-                <div class="scan-btn" onclick="startLiveScan()">
-                    <span style="font-size: 0.6rem; opacity: 0.7; letter-spacing: 2px; margin-bottom: 2px;">PRESS</span>
-                    <span style="font-size: 1.4rem; font-weight: 900; letter-spacing: 2px;">SCAN</span>
-                </div>
-            </div>
-            <div id="status-msg">READY TO SCAN</div>
-        </div>
-
-        <!-- 4 Slim Frames -->
-        <div class="cred-list">
-            <div class="cred-item"><span>User: telecomadmin</span><button class="copy-btn" onclick="copy('telecomadmin')">COPY</button></div>
-            <div class="cred-item"><span>Pass: admintelecom</span><button class="copy-btn" onclick="copy('admintelecom')">COPY</button></div>
-            <div class="cred-item"><span>User: root</span><button class="copy-btn" onclick="copy('root')">COPY</button></div>
-            <div class="cred-item"><span>Pass: adminHW</span><button class="copy-btn" onclick="copy('adminHW')">COPY</button></div>
-        </div>
-
-        <!-- Copyright & Powered by -->
-        <div class="footer">
-            <p id="detected-ip" class="ip-info">Scanning Wi-Fi Gateway...</p>
-            <p style="font-size: 9px; color: #475569; letter-spacing: 2px;">© 2026 COPYRIGHT POWERED BY</p>
-            <span class="author">KAMRAN KHAN</span>
-        </div>
+    <div class="header">
+        <img src="icon-512.png" class="logo" alt="App Logo">
+        <h2 style="margin: 15px 0 5px 0;">Network Admin</h2>
+        <div id="isp-name">Detecting Network...</div>
     </div>
 
-<script>
-    function copy(t) {
-        navigator.clipboard.writeText(t);
-        alert("Copied: " + t);
-    }
+    <div class="status-card">
+        <div class="stat-item"><span id="city-text">...</span><b>City</b></div>
+        <div class="stat-item"><span id="type-text">Checking</span><b>Connection</b></div>
+    </div>
 
-    async function startLiveScan() {
-        const msg = document.getElementById('status-msg');
-        const ipDisplay = document.getElementById('detected-ip');
-        msg.innerText = "DETECTING IP...";
-        
-        // We probe the most common gateways. 
-        // 192.168.8.1 is placed first because it's your specific IP.
-        const targets = [
-            '192.168.8.1',
-            '192.168.1.1',
-            '192.168.0.1',
-            '192.168.100.1',
-            '10.0.0.1'
-        ];
+    <div class="container" id="device-list">
+        <div style="text-align:center; padding:20px; color:#666;">Scanning for Modems (192.168.x.x)...</div>
+    </div>
 
-        let foundGateway = null;
+    <button class="refresh-btn" onclick="location.reload()">🔄</button>
 
-        // Smart Probe: We try to fetch a resource from each IP
-        for (const ip of targets) {
-            try {
-                // We use a very short timeout for speed
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 800);
-
-                const response = await fetch(`http://${ip}`, { 
-                    mode: 'no-cors', 
-                    signal: controller.signal 
-                });
-
-                // If the fetch doesn't throw a "Network Error", the IP is alive
-                if (response) {
-                    foundGateway = ip;
-                    break;
-                }
-            } catch (e) {
-                // If error is NOT a timeout, the IP might exist but block CORS
-                if (e.name !== 'AbortError') {
-                    foundGateway = ip; 
-                    break;
-                }
-            }
-        }
-
-        if (foundGateway) {
-            msg.innerText = "FOUND!";
-            ipDisplay.innerText = "Connected to Gateway: " + foundGateway;
-            setTimeout(() => {
-                window.location.href = `http://${foundGateway}`;
-            }, 1000);
-        } else {
-            // If scanning is totally blocked by your phone's firewall, 
-            // we open the most common one as a fallback.
-            msg.innerText = "OPENING...";
-            window.location.href = "http://192.168.8.1";
-        }
-    }
-</script>
-
-</body>
     <script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js');
-  }
+        // 1. Get Live ISP & Geography Data
+        async function loadNetworkProfile() {
+            try {
+                const res = await fetch('https://ipapi.co/json/');
+                const data = await res.json();
+                document.getElementById('isp-name').innerText = data.org;
+                document.getElementById('city-text').innerText = data.city;
+                
+                const conn = navigator.connection || {};
+                document.getElementById('type-text').innerText = conn.effectiveType || "Wi-Fi";
+            } catch (e) {
+                document.getElementById('isp-name').innerText = "Local Wi-Fi Network";
+            }
+            runScan();
+        }
+
+        // 2. The Universal Modem Scanner
+        function runScan() {
+            const list = document.getElementById('device-list');
+            const subnets = ["192.168.100.1", "192.168.1.1", "192.168.0.1", "192.168.8.1", "10.0.0.1"];
+            
+            list.innerHTML = ""; // Clear list for fresh scan
+
+            subnets.forEach(ip => {
+                const img = new Image();
+                // This bypasses the HTTPS security wall
+                img.src = `http://${ip}/favicon.ico?t=${Date.now()}`;
+                
+                // If it loads or errors, the IP is likely active
+                img.onload = () => createDeviceCard(ip, "Active Modem Found");
+                img.onerror = () => createDeviceCard(ip, "Gateway Detected");
+            });
+        }
+
+        function createDeviceCard(ip, status) {
+            const list = document.getElementById('device-list');
+            if (document.getElementById('dev-' + ip)) return;
+
+            const card = document.createElement('div');
+            card.id = 'dev-' + ip;
+            card.className = 'device-card';
+            card.innerHTML = `
+                <div class="ip-info">
+                    <b>${ip}</b>
+                    <span>${status}</span>
+                </div>
+                <button class="btn-open" onclick="window.open('http://${ip}', '_blank')">LOGIN</button>
+            `;
+            list.appendChild(card);
+        }
+
+        // Register PWA Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+
+        window.onload = loadNetworkProfile;
     </script>
-    
+</body>
 </html>
