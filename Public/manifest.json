@@ -1,0 +1,17 @@
+{
+  "name": "Wi-Fi Admin Page",
+  "short_name": "Wi-Fi",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#001a2c",
+  "theme_color": "#001a2c",
+  "icons": [
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
+
