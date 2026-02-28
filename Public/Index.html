@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <!-- PWA Settings -->
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Wi-Fi Scan">
+    
+    <!-- Colorful App Icon -->
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/9035/9035316.png">
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/9035/9035316.png">
+
+    <!-- Web Manifest (For Chrome Install Button) -->
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIldpLUZpIFNjYW4iLAogICJzaG9ydF9uYW1lIjogIldpLUZpIFNjYW4iLAogICJzdGFydF91cmwiOiAiLiIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzAwMDAwMCIsCiAgInRoZW1lX2NvbG9yIjogIiMwMGYyZmUiLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJodHRwczovL2Nkbi1pY29ucy1wbmcuZmxhdGljb24uY29tLzUxMi85MDM1LzkwMzUzMTYucG5nIiwKICAgICAgInNpemVzIjogIjUxMng1MTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9wbmciCiAgICB9CiAgXQp9">
+
+    <title>Wi-Fi Scan</title>
+
+    <style>
+        :root { --glow: #00f2fe; --bg: #000; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        html, body { height: 100%; width: 100%; overflow: hidden; background: radial-gradient(circle at center, #0f172a 0%, #000 100%); }
+        .app-container { display: flex; flex-direction: column; height: 100dvh; width: 100%; padding: 15px 20px; justify-content: space-between; align-items: center; }
+        .logo-text { font-size: clamp(1.8rem, 8vw, 2.5rem); font-weight: 900; letter-spacing: 10px; margin-top: 5px; background: linear-gradient(to bottom, #fff, var(--glow)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 0 15px rgba(0, 242, 254, 0.5); }
+        .main-action { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%; }
+        .scan-box { position: relative; width: clamp(200px, 50vw, 260px); height: clamp(200px, 50vw, 260px); display: flex; justify-content: center; align-items: center; }
+        .ring { position: absolute; border-radius: 50%; border: 1px solid rgba(0, 242, 254, 0.2); animation: pulse 3s infinite ease-out; }
+        .r1 { width: 110%; height: 110%; }
+        .r2 { width: 90%; height: 90%; animation-delay: 0.5s; }
+        @keyframes pulse { 0% { transform: scale(0.7); opacity: 0; } 50% { opacity: 0.4; } 100% { transform: scale(1.1); opacity: 0; } }
+        .scan-btn { width: clamp(140px, 35vw, 170px); height: clamp(140px, 35vw, 170px); border-radius: 50%; background: #000; border: 3px solid var(--glow); color: var(--glow); z-index: 10; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 0 40px rgba(0, 242, 254, 0.4); }
+        .scan-btn::after { content: ''; position: absolute; top: -50%; left: -100%; width: 50%; height: 200%; background: rgba(255, 255, 255, 0.2); transform: rotate(30deg); animation: shine 2.5s infinite; }
+        @keyframes shine { 0% { left: -100%; } 20% { left: 150%; } 100% { left: 150%; } }
+        #status-msg { margin-top: 15px; font-size: 13px; font-weight: 800; letter-spacing: 3px; color: var(--glow); text-transform: uppercase; text-shadow: 0 0 10px var(--glow); }
+        .cred-list { width: 100%; max-width: 380px; }
+        .cred-item { height: 38px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; display: flex; justify-content: space-between; align-items: center; padding: 0 12px; margin-bottom: 6px; }
+        .cred-item span { color: var(--glow); font-size: 12px; font-weight: bold; }
+        .copy-btn { background: var(--glow); border: none; padding: 4px 10px; border-radius: 5px; font-size: 9px; font-weight: 900; color: #000; cursor: pointer; }
+        .footer { text-align: center; padding-bottom: 5px; }
+        .author { color: var(--glow); font-weight: bold; font-size: 11px; letter-spacing: 3px; margin-top: 2px; display: block; }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="logo-text">MAHI G</div>
+
+        <div class="main-action">
+            <div class="scan-box">
+                <div class="ring r1"></div>
+                <div class="ring r2"></div>
+                <div class="scan-btn" onclick="universalScanner()">
+                    <span style="font-size: 0.6rem; opacity: 0.7; letter-spacing: 2px; margin-bottom: 2px;">PRESS</span>
+                    <span style="font-size: 1.5rem; font-weight: 900; letter-spacing: 2px;">SCAN</span>
+                </div>
+            </div>
+            <div id="status-msg">READY TO SCAN</div>
+        </div>
+
+        <div class="cred-list">
+            <div class="cred-item"><span>User: telecomadmin</span><button class="copy-btn" onclick="copy('telecomadmin')">COPY</button></div>
+            <div class="cred-item"><span>Pass: admintelecom</span><button class="copy-btn" onclick="copy('admintelecom')">COPY</button></div>
+            <div class="cred-item"><span>User: root</span><button class="copy-btn" onclick="copy('root')">COPY</button></div>
+            <div class="cred-item"><span>Pass: adminHW</span><button class="copy-btn" onclick="copy('adminHW')">COPY</button></div>
+        </div>
+
+        <div class="footer">
+            <p id="ip-display" style="font-size: 11px; color: #94a3b8; font-weight: bold;">WAITING FOR SCAN...</p>
+            <p style="font-size: 9px; color: #475569; letter-spacing: 2px;">© 2026 COPYRIGHT POWERED BY</p>
+            <span class="author">KAMRAN KHAN</span>
+        </div>
+    </div>
+
+<script>
+    // 1. REGISTER SERVICE WORKER (Required for Chrome 'Install' button)
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('data:text/javascript;base64,c2VsZi5hZGRFdmVudExpc3RlbmVyKCdmZXRjaCcsIGV2ZW50ID0+IHsgfSk7');
+        });
+    }
+
+    function copy(t) {
+        navigator.clipboard.writeText(t);
+        alert("Copied: " + t);
+    }
+
+    async function universalScanner() {
+        const msg = document.getElementById('status-msg');
+        const ipDisplay = document.getElementById('ip-display');
+        msg.innerText = "PROBING NETWORK...";
+
+        const commonGateways = ['192.168.1.1', '192.168.0.1', '192.168.100.1', '192.168.8.1', '10.0.0.1', '192.168.31.1'];
+        let found = false;
+
+        const promises = commonGateways.map(ip => {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.src = `http://${ip}/favicon.ico?t=${Date.now()}`;
+                img.onload = () => resolve(ip);
+                img.onerror = () => resolve(ip); 
+                setTimeout(() => resolve(null), 1500);
+            });
+        });
+
+        const detectedIP = await Promise.race(promises);
+
+        if (detectedIP) {
+            msg.innerText = "FOUND LIVE!";
+            ipDisplay.innerText = "IP DETECTED: " + detectedIP;
+            setTimeout(() => { window.location.replace(`http://${detectedIP}`); }, 800);
+        } else {
+            msg.innerText = "OPENING...";
+            window.location.replace("http://192.168.8.1");
+        }
+    }
+</script>
+
+</body>
+</html>
